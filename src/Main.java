@@ -149,6 +149,60 @@ public class Main
 
 	public static void task2(Scanner scanner)
 	{
+		BufferedReader reader = null;
+		while(reader == null)
+		{
+			System.out.println("Please input the name of input file:");
+			String fileName = scanner.next();
+			File file = new File(fileName);
+			reader = createFileReader(file);
+		}
 
+		BufferedWriter writer = null;
+		while(writer == null)
+		{
+			System.out.println("Please input the name of target file:");
+			String fileName = scanner.next();
+			File file = new File(fileName);
+			if(!file.exists())
+			{
+				System.out.println("File not found! Create it? ");
+				String check = scanner.next();
+				if(check.equalsIgnoreCase("yes"))
+					writer = createFileWriter(file, false);
+			}
+			else
+			{
+				System.out.println("File already exists! Append to it?");
+				String check = scanner.next();
+				boolean append = check.equalsIgnoreCase("yes");
+				writer = createFileWriter(file, append);
+			}
+		}
+
+		try
+		{
+			String line;
+			while((line = reader.readLine()) != null)
+			{
+				String trimmedLine = line.trim();
+				if(trimmedLine.isEmpty())
+					continue;
+				String[] words = trimmedLine.split("\\s+");
+				for(String word : words)
+				{
+					writer.write(word);
+					writer.newLine();
+				}
+			}
+
+			reader.close();
+			writer.close();
+			System.out.println("Finished reading and writing files!");
+		}
+		catch(IOException e)
+		{
+			System.out.println("An error occurred while reading or writing files!");
+		}
 	}
 }
